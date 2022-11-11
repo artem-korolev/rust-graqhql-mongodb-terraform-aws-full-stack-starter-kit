@@ -13,6 +13,7 @@ pretty_env_logger = "0.4.0"
 
 # Serializer
 serde_json = "1.0.87"
+serde = { version = "1.0.147", features = ["derive"] }
 
 # GraphQL
 juniper = "0.15.10"
@@ -23,3 +24,7 @@ hyper = {version = "0.14.23", features = ["full"]}
 
 # Async
 tokio = { version = "1.21.2", features = ["full"] }
+futures = "0.3.25"
+
+# MongoDB
+mongodb = "2.3.1"
