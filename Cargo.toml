@@ -17,9 +17,9 @@ serde = { version = "1.0.147", features = ["derive"] }
 
 # GraphQL
 juniper = "0.15.10"
+juniper_hyper = "0.8.0"
 
 # Web
-warp = "0.3.3"
 hyper = {version = "0.14.23", features = ["full"]}
 
 # Async
@@ -28,3 +28,4 @@ futures = "0.3.25"
 
 # MongoDB
 mongodb = "2.3.1"
+bson = { version = "2.4.0", features = ["chrono-0_4"] } # Needed for using chrono datetime in doc

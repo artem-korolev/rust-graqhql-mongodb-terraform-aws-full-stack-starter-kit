@@ -1,6 +1,6 @@
 pub mod schema;
 use mongodb::Collection;
-use mongodb::{Client, options::ClientOptions};
+use mongodb::{options::ClientOptions, Client};
 
 // Get a handle to a collection of `Book`.
 pub async fn get_books_collection() -> Result<Collection<schema::Book>, mongodb::error::Error> {

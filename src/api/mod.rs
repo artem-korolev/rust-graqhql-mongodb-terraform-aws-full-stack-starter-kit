@@ -1,15 +1,13 @@
-#[derive(GraphQLEnum)]
-enum Episode {
-    NewHope,
-    Empire,
-    Jedi,
-}
+mod mutation;
+mod query;
+use juniper::{EmptySubscription, RootNode};
 
-#[derive(GraphQLObject)]
-/// A humanoid creature in the Star Wars universe
-struct Human {
-    id: String,
-    name: String,
-    appears_in: Vec<Episode>,
-    home_planet: String,
+use self::{mutation::MutationRoot, query::QueryRoot};
+
+pub mod schema;
+
+pub type Schema = RootNode<'static, QueryRoot, MutationRoot, EmptySubscription>;
+
+pub fn create_schema() -> Schema {
+    Schema::new(QueryRoot, MutationRoot, EmptySubscription::<()>::new())
 }
