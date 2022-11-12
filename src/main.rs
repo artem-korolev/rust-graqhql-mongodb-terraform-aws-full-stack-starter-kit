@@ -5,7 +5,7 @@ mod server;
 extern crate log;
 extern crate pretty_env_logger;
 
-use crate::server::create_server;
+use crate::{server::create_server, repository::Repository};
 
 #[tokio::main]
 async fn main() {
@@ -14,9 +14,9 @@ async fn main() {
     let addr = ([127, 0, 0, 1], 3000).into();
 
     let schema = api::create_schema();
-    let db = ();
-
+    let db = Repository::new().await.unwrap();
     let server = create_server(schema, db, addr).await;
+
     println!("Listening on http://{addr}");
 
     if let Err(e) = server.await {

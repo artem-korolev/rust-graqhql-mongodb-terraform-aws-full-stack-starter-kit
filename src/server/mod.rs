@@ -7,11 +7,11 @@ use hyper::{
     Body, Method, Response, StatusCode,
 };
 
-use crate::api::Schema;
+use crate::{api::Schema, repository::Repository};
 
 pub async fn create_server(
     schema: Schema,
-    db: (),
+    db: Repository,
     addr: SocketAddr,
 ) -> impl Future<Output = hyper::Result<()>> {
     let schema = std::sync::Arc::new(schema);

@@ -17,6 +17,7 @@ serde = { version = "1.0.147", features = ["derive"] }
 
 # GraphQL
 juniper = "0.15.10"
+juniper_subscriptions = "0.16.0"
 juniper_hyper = "0.8.0"
 
 # Web

@@ -799,6 +799,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "juniper_subscriptions"
+version = "0.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2983b26a1e12b691c17432aee3881d8bec4a94d6c64bc933c0eaf6d9e3429f13"
+dependencies = [
+ "futures",
+ "juniper",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1228,6 +1238,7 @@ dependencies = [
  "hyper",
  "juniper",
  "juniper_hyper",
+ "juniper_subscriptions",
  "log",
  "mongodb",
  "pretty_env_logger",
