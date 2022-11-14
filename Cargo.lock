@@ -1543,24 +1543,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "afab94fb28594581f62d981211a9a4d53cc8130bbcbbb89a0440d9b8e81a7746"
 
 [[package]]
-name = "rust-graqhql-terraform-aws-full-stack-starter-kit"
-version = "0.1.0"
-dependencies = [
- "bson 2.4.0",
- "futures",
- "hyper",
- "juniper",
- "juniper_hyper",
- "juniper_subscriptions",
- "log",
- "mongodb",
- "pretty_env_logger",
- "serde",
- "serde_json",
- "tokio",
-]
-
-[[package]]
 name = "rustc_version"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1734,6 +1716,24 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "bson 2.4.0",
+ "futures",
+ "hyper",
+ "juniper",
+ "juniper_hyper",
+ "juniper_subscriptions",
+ "log",
+ "mongodb",
+ "pretty_env_logger",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
