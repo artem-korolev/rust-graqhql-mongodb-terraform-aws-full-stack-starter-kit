@@ -38,6 +38,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d301b3b94cb4b2f23d7917810addbbaff90738e0ca2be692bd027e70d7e0330c"
 
 [[package]]
+name = "api"
+version = "0.1.0"
+dependencies = [
+ "server",
+]
+
+[[package]]
 name = "ascii"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -415,6 +422,7 @@ dependencies = [
 name = "frontend"
 version = "0.1.0"
 dependencies = [
+ "api",
  "getrandom 0.2.8",
  "gloo",
  "instant",

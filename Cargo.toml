@@ -1,3 +1,3 @@
 [workspace]
 
-members = ["app/frontend", "app/server"]
+members = ["app/frontend", "app/server", "model/api"]

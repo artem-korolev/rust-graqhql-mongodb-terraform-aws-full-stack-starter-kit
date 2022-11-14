@@ -1,0 +1,28 @@
+type QueryRoot {
+  books: [Book!]!
+}
+
+input NewBook {
+  title: String!
+  author: String!
+}
+
+type Book {
+  id: String!
+  title: String!
+  author: String!
+}
+
+type MutationRoot {
+  createBook(newBook: NewBook!): Book!
+}
+
+type Subscription {
+  helloWorld: String!
+}
+
+schema {
+  query: QueryRoot
+  mutation: MutationRoot
+  subscription: Subscription
+}
