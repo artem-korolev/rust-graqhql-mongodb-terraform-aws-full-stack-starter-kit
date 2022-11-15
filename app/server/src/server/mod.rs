@@ -2,6 +2,7 @@ use std::{convert::Infallible, net::SocketAddr};
 
 use futures::Future;
 use hyper::{
+    http::HeaderValue,
     server::Server,
     service::{make_service_fn, service_fn},
     Body, Method, Response, StatusCode,
@@ -25,7 +26,7 @@ pub async fn create_server(
                 let schema = schema.clone();
                 let ctx = ctx.clone();
                 async {
-                    Ok::<_, Infallible>(match (req.method(), req.uri().path()) {
+                    let mut resp = match (req.method(), req.uri().path()) {
                         (&Method::GET, "/") => juniper_hyper::playground("/graphql", None).await,
                         (&Method::GET, "/graphql") | (&Method::POST, "/graphql") => {
                             juniper_hyper::graphql(schema, ctx, req).await
@@ -35,7 +36,12 @@ pub async fn create_server(
                             *response.status_mut() = StatusCode::NOT_FOUND;
                             response
                         }
-                    })
+                    };
+                    resp.headers_mut().insert(
+                        hyper::header::ACCESS_CONTROL_ALLOW_ORIGIN,
+                        HeaderValue::from_str("*").unwrap(),
+                    );
+                    Ok::<_, Infallible>(resp)
                 }
             }))
         }
