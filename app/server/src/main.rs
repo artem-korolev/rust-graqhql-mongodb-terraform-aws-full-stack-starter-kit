@@ -1,4 +1,4 @@
-mod api;
+mod graphql;
 mod repository;
 mod server;
 
@@ -13,7 +13,7 @@ async fn main() {
 
     let addr = ([127, 0, 0, 1], 3000).into();
 
-    let schema = api::create_schema();
+    let schema = graphql::create_schema();
     let db = Repository::new().await.unwrap();
     let server = create_server(schema, db, addr).await;
 

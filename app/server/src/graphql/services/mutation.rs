@@ -1,7 +1,7 @@
 use bson::doc;
 
 use crate::{
-    api::schema::{Book, NewBook},
+    graphql::types::{Book, input::NewBook},
     repository::{self, Repository},
 };
 

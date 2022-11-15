@@ -1,4 +1,4 @@
-use crate::{api::schema::Book, repository::Repository};
+use crate::{graphql::types::Book, repository::Repository};
 use futures::stream::TryStreamExt;
 
 pub struct QueryRoot;

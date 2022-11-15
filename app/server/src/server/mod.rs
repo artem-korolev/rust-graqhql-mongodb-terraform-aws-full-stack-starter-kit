@@ -8,7 +8,7 @@ use hyper::{
     Body, Method, Response, StatusCode,
 };
 
-use crate::{api::Schema, repository::Repository};
+use crate::{graphql::Schema, repository::Repository};
 
 pub async fn create_server(
     schema: Schema,
