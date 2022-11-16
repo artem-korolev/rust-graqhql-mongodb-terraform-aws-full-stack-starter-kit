@@ -126,7 +126,8 @@ impl Home {
         let books = data.books.iter().map(|book| {
             html! {
                 <div class="book">
-                    { book.title.to_owned() + " :: " + &book.author }
+                    <span>{ "ObjectId(" }{ &book.id }{") = "}</span>
+                    <span>{ &book.title }{ " :: " }{ &book.author }</span>
                 </div>
             }
         });
