@@ -148,6 +148,7 @@ fn switch(routes: Route) -> Html {
 }
 
 fn main() {
+    //pretty_env_logger::init();
     wasm_logger::init(wasm_logger::Config::new(log::Level::Trace));
     yew::Renderer::<App>::new().render();
 }

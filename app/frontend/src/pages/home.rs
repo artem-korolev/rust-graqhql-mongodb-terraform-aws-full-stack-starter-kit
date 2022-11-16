@@ -1,75 +1,138 @@
+use graphql_client::{reqwest::post_graphql, GraphQLQuery};
+use std::{
+    error::Error,
+    fmt::{self, Debug, Display, Formatter},
+};
+
+use serde_json::Value;
 use yew::prelude::*;
 
-pub struct Home;
+use self::home_page_data::ResponseData;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "../../model/api/schema.graphql",
+    query_path = "./graphql/home.graphql",
+    response_derives = "Debug"
+)]
+struct HomePageData;
+
+pub enum Msg {
+    SetState(FetchState<ResponseData>),
+    GetData,
+}
+
+pub enum FetchState<T> {
+    NotFetching,
+    Fetching,
+    Success(T),
+    Failed(FetchError),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct FetchError {
+    err: Value,
+}
+
+impl Display for FetchError {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        Debug::fmt(&self.err, f)
+    }
+}
+impl Error for FetchError {}
+
+impl From<Value> for FetchError {
+    fn from(value: Value) -> Self {
+        Self { err: value }
+    }
+}
+
+pub struct Home {
+    data: FetchState<ResponseData>,
+}
+
+fn log(s: &str) {
+    web_sys::console::log_1(&wasm_bindgen::JsValue::from_str(s))
+}
+
+async fn fetch_gql_data() -> Result<ResponseData, FetchError> {
+    let client = reqwest::Client::new();
+    let variables = home_page_data::Variables {};
+
+    let response =
+        post_graphql::<HomePageData, _>(&client, "http://127.0.0.1:3000/graphql", variables)
+            .await
+            .map_err(|err| {
+                log(&format!("Could not fetch puppies. error: {:?}", err));
+                Value::Null
+            })?;
+    Ok(render_response(response))
+}
+
+fn render_response(
+    response: graphql_client::Response<home_page_data::ResponseData>,
+) -> ResponseData {
+    response.data.expect("error")
+}
+
 impl Component for Home {
-    type Message = ();
+    type Message = Msg;
     type Properties = ();
 
     fn create(_ctx: &Context<Self>) -> Self {
-        Self
+        Self {
+            data: FetchState::NotFetching,
+        }
+    }
+
+    fn rendered(&mut self, ctx: &Context<Self>, first_render: bool) {
+        if first_render {
+            ctx.link().send_message(Msg::GetData);
+        }
+    }
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        match msg {
+            Msg::SetState(fetch_state) => {
+                self.data = fetch_state;
+
+                true
+            }
+            Msg::GetData => {
+                ctx.link().send_future(async {
+                    match fetch_gql_data().await {
+                        Ok(data) => Msg::SetState(FetchState::Success(data)),
+                        Err(err) => Msg::SetState(FetchState::Failed(err)),
+                    }
+                });
+
+                ctx.link().send_message(Msg::SetState(FetchState::Fetching));
+
+                false
+            }
+        }
     }
 
     fn view(&self, _ctx: &Context<Self>) -> Html {
-        html! {
-            <div class="tile is-ancestor is-vertical">
-                <div class="tile is-child hero">
-                    <div class="hero-body container pb-0">
-                        <h1 class="title is-1">{ "Welcome..." }</h1>
-                        <h2 class="subtitle">{ "...to the best yew content" }</h2>
-                    </div>
-                </div>
-
-                <div class="tile is-child">
-                    <figure class="image is-3by1">
-                        <img alt="A random image for the input term 'yew'." src="https://source.unsplash.com/random/1200x400/?yew" />
-                    </figure>
-                </div>
-
-                <div class="tile is-parent container">
-                    { self.view_info_tiles() }
-                </div>
-            </div>
+        match &self.data {
+            FetchState::NotFetching => html! { "NotFetching" },
+            FetchState::Fetching => html! { "Fetching" },
+            FetchState::Success(home_data) => self.view_home(home_data),
+            FetchState::Failed(err) => html! { err },
         }
     }
 }
 impl Home {
-    fn view_info_tiles(&self) -> Html {
+    fn view_home(&self, data: &ResponseData) -> Html {
+        let books = data.books.iter().map(|book| {
+            html! {
+                <div class="book">
+                { book.title.to_string() + " :: " + &book.author }
+                </div>
+            }
+        });
         html! {
             <>
-                <div class="tile is-parent">
-                    <div class="tile is-child box">
-                        <p class="title">{ "What are yews?" }</p>
-                        <p class="subtitle">{ "Everything you need to know!" }</p>
-
-                        <div class="content">
-                            {r#"
-                            A yew is a small to medium-sized evergreen tree, growing 10 to 20 metres tall, with a trunk up to 2 metres in diameter.
-                            The bark is thin, scaly brown, coming off in small flakes aligned with the stem.
-                            The leaves are flat, dark green, 1 to 4 centimetres long and 2 to 3 millimetres broad, arranged spirally on the stem,
-                            but with the leaf bases twisted to align the leaves in two flat rows either side of the stem,
-                            except on erect leading shoots where the spiral arrangement is more obvious.
-                            The leaves are poisonous.
-                            "#}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tile is-parent">
-                    <div class="tile is-child box">
-                        <p class="title">{ "Who are we?" }</p>
-
-                        <div class="content">
-                            { "We're a small team of just 2" }
-                            <sup>{ 64 }</sup>
-                            { " members working tirelessly to bring you the low-effort yew content we all desperately crave." }
-                            <br />
-                            {r#"
-                                We put a ton of effort into fact-checking our posts.
-                                Some say they read like a Wikipedia article - what a compliment!
-                            "#}
-                        </div>
-                    </div>
-                </div>
+                { for books }
             </>
         }
     }
