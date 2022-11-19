@@ -1,4 +1,4 @@
-query HomePageData {
+query HomePageQuery {
   books {
     id
     title

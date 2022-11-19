@@ -1,6 +1,7 @@
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+mod core;
 mod components;
 mod content;
 mod generator;
